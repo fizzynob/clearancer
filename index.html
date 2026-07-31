@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>clearancer</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Hanken+Grotesk:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/src/styles.css" />
+    <script type="module" src="/src/main.ts" defer></script>
+  </head>
+  <body>
+    <div class="grain-overlay"></div>
+
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="topbar-left">
+          <span class="brand">clearancer</span>
+          <button class="btn btn-outline btn-xs" id="btn-las-options">
+            <span class="material-symbols-outlined icon-sm">more_horiz</span> las options
+          </button>
+        </div>
+        <div class="topbar-right">
+          <span class="save-indicator" id="save-indicator">saved</span>
+          <button class="btn btn-outline btn-xs" id="btn-save-now" title="Save now">
+            <span class="material-symbols-outlined icon-sm">save</span> save
+          </button>
+          <button class="btn btn-outline btn-xs" id="btn-google-rescan" title="Check Google Classroom for new coursework">
+            <span class="material-symbols-outlined icon-sm">sync</span> rescan
+          </button>
+          <button class="icon-btn" id="btn-theme-toggle" title="Toggle dark mode">
+            <span class="material-symbols-outlined icon-sm">dark_mode</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="page">
+      <nav class="tabs" id="subject-tabs"></nav>
+
+      <main class="sheet">
+        <div id="subject-content"></div>
+      </main>
+    </div>
+
+    <!-- LAS Options Modal -->
+    <div class="modal-overlay hidden" id="modal-las-options">
+      <div class="modal-box modal-narrow">
+        <div class="modal-header">
+          <h4 class="modal-title">las options</h4>
+          <button class="icon-btn" data-close-modal>
+            <span class="material-symbols-outlined icon-sm">close</span>
+          </button>
+        </div>
+        <div class="modal-actions-list">
+          <button class="modal-action-btn" id="opt-add-las">add new las</button>
+          <button class="modal-action-btn" id="opt-add-quiz">add new quiz</button>
+          <button class="modal-action-btn modal-action-danger" id="opt-clear-las">
+            clear all las &amp; quizzes
+          </button>
+          <button class="modal-action-btn" id="opt-google-classroom">
+            sync to google classroom
+          </button>
+          <button class="modal-action-btn modal-action-danger" id="opt-google-disconnect" hidden>
+            disconnect google classroom
+          </button>
+          <button class="modal-action-btn" id="opt-reveal-data-file">
+            show data file in explorer
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Google Classroom connect modal (shown once, before the first sign-in) -->
+    <div class="modal-overlay hidden" id="modal-google">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h4 class="modal-title">connect google classroom</h4>
+          <button class="icon-btn" data-close-modal>
+            <span class="material-symbols-outlined icon-sm">close</span>
+          </button>
+        </div>
+        <p class="google-help-text">
+          Connect a Google Cloud OAuth client to pull your coursework and grades from Google
+          Classroom. This is a one-time setup — see Clearancer's setup guide for how to create
+          the client ID and secret. After connecting, Clearancer signs you in with Google, finds
+          your classes, matches each one to a subject tab by name, and imports its coursework as
+          LAS entries (unrelated classes are skipped automatically).
+        </p>
+        <form id="form-google-connect" class="entry-form">
+          <label class="field field-wide">
+            <span class="field-label">client id</span>
+            <input type="text" name="clientId" placeholder="xxxxx.apps.googleusercontent.com" required />
+          </label>
+          <label class="field field-wide">
+            <span class="field-label">client secret</span>
+            <input type="password" name="clientSecret" placeholder="GOCSPX-..." required />
+          </label>
+          <p class="google-status-text" id="google-connect-status" hidden></p>
+          <div class="modal-footer">
+            <div class="modal-footer-right">
+              <button type="submit" class="btn btn-primary" id="btn-google-connect">
+                <span class="material-symbols-outlined icon-sm">login</span> connect &amp; sync
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- LAS Entry Modal (add/edit) -->
+    <div class="modal-overlay hidden" id="modal-las-entry">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h4 class="modal-title" id="las-entry-modal-title">add las</h4>
+          <button class="icon-btn" data-close-modal>
+            <span class="material-symbols-outlined icon-sm">close</span>
+          </button>
+        </div>
+        <form id="form-las-entry" class="entry-form">
+          <input type="hidden" name="id" />
+          <label class="field">
+            <span class="field-label">date</span>
+            <input type="date" name="date" />
+          </label>
+          <label class="field">
+            <span class="field-label">las number</span>
+            <input type="text" name="number" placeholder="01" required />
+          </label>
+          <label class="field field-wide">
+            <span class="field-label">title</span>
+            <input type="text" name="title" placeholder="e.g. Cell Division: Meiosis and Mitosis" />
+          </label>
+          <div class="field-row">
+            <label class="field">
+              <span class="field-label">cd score</span>
+              <input type="number" name="cdScore" min="0" step="0.5" />
+            </label>
+            <label class="field">
+              <span class="field-label">cd max</span>
+              <input type="number" name="cdMax" min="0" step="0.5" value="10" required />
+            </label>
+          </div>
+          <div class="field-row">
+            <label class="field">
+              <span class="field-label">ww score</span>
+              <input type="number" name="wwScore" min="0" step="0.5" />
+            </label>
+            <label class="field">
+              <span class="field-label">ww max</span>
+              <input type="number" name="wwMax" min="0" step="0.5" value="10" required />
+            </label>
+          </div>
+          <label class="field field-wide">
+            <span class="field-label">status</span>
+            <select name="status">
+              <option value="pending">pending</option>
+              <option value="submitted">submitted</option>
+              <option value="graded">graded</option>
+            </select>
+          </label>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline" id="las-entry-delete" hidden>delete</button>
+            <div class="modal-footer-right">
+              <button type="button" class="btn btn-outline" data-close-modal>cancel</button>
+              <button type="submit" class="btn btn-primary">save</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Quiz Entry Modal (add/edit) -->
+    <div class="modal-overlay hidden" id="modal-quiz-entry">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h4 class="modal-title" id="quiz-entry-modal-title">add quiz</h4>
+          <button class="icon-btn" data-close-modal>
+            <span class="material-symbols-outlined icon-sm">close</span>
+          </button>
+        </div>
+        <form id="form-quiz-entry" class="entry-form">
+          <input type="hidden" name="id" />
+          <label class="field">
+            <span class="field-label">date</span>
+            <input type="date" name="date" />
+          </label>
+          <label class="field">
+            <span class="field-label">quiz number</span>
+            <input type="text" name="number" placeholder="01" required />
+          </label>
+          <label class="field field-wide">
+            <span class="field-label">title</span>
+            <input type="text" name="title" placeholder="e.g. Cellular Processes &amp; Genetics" />
+          </label>
+          <div class="field-row">
+            <label class="field">
+              <span class="field-label">score</span>
+              <input type="number" name="score" min="0" step="0.5" />
+            </label>
+            <label class="field">
+              <span class="field-label">max</span>
+              <input type="number" name="max" min="0" step="0.5" value="50" required />
+            </label>
+          </div>
+          <label class="field field-wide">
+            <span class="field-label">status</span>
+            <select name="status">
+              <option value="pending">pending</option>
+              <option value="submitted">submitted</option>
+              <option value="graded">graded</option>
+            </select>
+          </label>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline" id="quiz-entry-delete" hidden>delete</button>
+            <div class="modal-footer-right">
+              <button type="button" class="btn btn-outline" data-close-modal>cancel</button>
+              <button type="submit" class="btn btn-primary">save</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Confirm dialog -->
+    <div class="modal-overlay hidden" id="modal-confirm">
+      <div class="modal-box modal-narrow">
+        <p class="confirm-message" id="confirm-message">Are you sure?</p>
+        <div class="modal-footer">
+          <div class="modal-footer-right" style="width: 100%; justify-content: flex-end">
+            <button type="button" class="btn btn-outline" id="confirm-cancel">cancel</button>
+            <button type="button" class="btn btn-danger" id="confirm-ok">confirm</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast-stack" id="toast-stack"></div>
+  </body>
+</html>
