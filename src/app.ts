@@ -1337,12 +1337,18 @@ export async function initApp() {
 
   try {
     const appWindow = getCurrentWindow();
+    let closing = false;
     appWindow.onCloseRequested(async (event) => {
-      if (dirty) {
-        event.preventDefault();
-        await flushSave();
-        await appWindow.destroy();
+      if (!dirty || closing) return;
+      closing = true;
+      event.preventDefault();
+      try {
+        await flushSave(true);
+      } catch (err) {
+        // Never trap the user in an unclosable window over a failed save.
+        console.error("Save-on-close failed:", err);
       }
+      await appWindow.destroy();
     });
   } catch (err) {
     console.warn("Could not attach close handler:", err);
