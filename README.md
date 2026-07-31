@@ -1,8 +1,8 @@
 # clearancer
 
-a modern retro stat manager, built around the CVIF DLP learning program.
+a modern retro local based stat manager, built around the CVIF DLP learning program.
 
-## Features
+## features
 
 - **six subject tabs** (Science, Filipino, Araling Pan., TLE, CommArts, Math), each with its own LAS and quiz tables
 - **inline quick-edit** — click a CD/WW/quiz score or a status tag to edit it in place, like a spreadsheet cell; right-click a row for the full edit form
@@ -14,16 +14,16 @@ a modern retro stat manager, built around the CVIF DLP learning program.
 - **system Media Transport Controls widget** — shows what's currently playing on Windows with a small animated equalizer 
 - **local autosave** — atomic writes to a JSON file in the OS app-data directory, plus a manual save button
 
-## Development
+## development
 
-Prerequisites: [Node.js](https://nodejs.org), [Rust](https://www.rust-lang.org/tools/install), and the [Tauri prerequisites](https://tauri.app/start/prerequisites/) for your platform (Windows: WebView2, which ships with Windows 10/11).
+prerequisites: [Node.js](https://nodejs.org), [Rust](https://www.rust-lang.org/tools/install), and the [Tauri prerequisites](https://tauri.app/start/prerequisites/) for your platform (Windows: WebView2, which ships with Windows 10/11).
 
 ```bash
 npm install
 npm run tauri dev
 ```
 
-## Building a release binary
+## building a release binary
 
 ```bash
 npm run tauri build
@@ -31,7 +31,7 @@ npm run tauri build
 
 This produces a standalone executable and an installer (NSIS/MSI on Windows) under `src-tauri/target/release/`.
 
-## Google Classroom setup
+## google classroom setup
 
 Sync requires your own Google Cloud OAuth client. 
 
@@ -48,10 +48,10 @@ Sync requires your own Google Cloud OAuth client.
 4. Under **APIs & Services → Credentials**, create an **OAuth client ID** of type **Desktop app**. Copy the Client ID and Client Secret.
 5. In the app, open **las options → sync to google classroom**, paste in the Client ID/Secret, and connect. Your browser will show an "unverified app" warning — that's expected for a personal OAuth client; click through it to continue.
 
-## Data storage
+## data storage
 
 All tracker data lives in a single `data.json` in the OS app-data directory (findable via **las options → show data file in explorer**). Google OAuth tokens are stored separately in `google_auth.json` in the same directory, in plain text — this is a personal local tool, not a hardened credential store.
 
-## License
+## license
 
 no
