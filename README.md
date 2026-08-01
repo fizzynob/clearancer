@@ -2,6 +2,8 @@
 
 a modern retro local based stat manager, built around the CVIF DLP learning program.
 
+<img width="1282" height="688" alt="image" src="https://github.com/user-attachments/assets/07b20624-3ceb-4d7e-afd4-28dd401b7ad2" />
+
 ## features
 
 - **six subject tabs** (Science, Filipino, Araling Pan., TLE, CommArts, Math), each with its own LAS and quiz tables
